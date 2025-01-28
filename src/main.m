@@ -13,7 +13,7 @@ function detectLicensePlate(input_image)
     app = app_GUI();
 
     %% TODO debug
-    show_until_step = 15;
+    show_until_step = 20;
 
     %% 1. convert RGB-image to grayscale image
     gray_image = rgb2gray(input_image);
@@ -41,9 +41,8 @@ function detectLicensePlate(input_image)
         return;
     end
 
-    %% image substraction
-    [rows, columns, chans] = size(input_image);
-    se = strel('disk', round(columns * 0.025));
+    %% 4. image subtraction to enhance edges
+    se = strel('disk', round(size(input_image, 2) * 0.025));
     opened_image = imopen(contr_image, se);
     plotImage(opened_image, app.processed_image_axes, 'Opened image');
 
@@ -68,30 +67,38 @@ function detectLicensePlate(input_image)
         return;
     end
 
+    %% 5.b. remove all edges that have fewer than 8 pixels
+    rem_image = bwareaopen(edge_image, 8);
+    plotImage(rem_image, app.processed_image_axes, 'Small edges removed image');
+
+    if (show_until_step <= 6)
+        return;
+    end
+
     %% 6. apply math. morphologies (dilate and erode) to fill spaces
     % dilation: create a structuring element
     se = strel('diamond', 3);
     dil_image = imdilate(edge_image, se);
     plotImage(dil_image, app.processed_image_axes, 'Dilated image');
 
-    if (show_until_step <= 6)
-        return;
-    end
-
-    % erosion: create a structuring element
-    se = strel('square', 3);
-    erode_image = imerode(dil_image, se);
-    plotImage(erode_image, app.processed_image_axes, 'Eroded image');
-
     if (show_until_step <= 7)
         return;
     end
 
+    % erosion: create a structuring element
+    %se = strel('square', 3);
+    %erode_image = imerode(dil_image, se);
+    %plotImage(erode_image, app.processed_image_axes, 'Eroded image');
+
+    %if (show_until_step <= 8)
+    %    return;
+    %end
+
     %% 7. fill holes
-    fill_image = imfill(erode_image, 4, "holes");
+    fill_image = imfill(dil_image, 4, "holes");
     plotImage(fill_image, app.processed_image_axes, 'Holes filled image');
 
-    if (show_until_step <= 8)
+    if (show_until_step <= 9)
         return;
     end
 
@@ -99,19 +106,7 @@ function detectLicensePlate(input_image)
     clear_image = imclearborder(fill_image);
     plotImage(clear_image, app.processed_image_axes, 'Objects touching the border removed image');
 
-    if (show_until_step <= 9)
-        return;
-    end
-
     %% 9. erode image with a diamond- and line-structuring-element
-    %se = strel('square', 12);
-    %open_image = imopen(clear_image, se);
-    % % % plotImage(open_image, app.processed_image_axes, 'Opened image');
-
-    if (show_until_step <= 10)
-        return;
-    end
-
     se = strel('diamond', 5);
     erode_image_2 = imerode(clear_image, se);
     plotImage(erode_image_2, app.processed_image_axes, 'Eroded image 2');
@@ -124,47 +119,53 @@ function detectLicensePlate(input_image)
     erode_image_3 = imerode(erode_image_2, se);
     plotImage(erode_image_3, app.processed_image_axes, 'Eroded image 3');
 
+    %clear_image = imclearborder(erode_image_3);
+    %plotImage(clear_image, app.processed_image_axes, 'Objects touching the border removed image');
+
     if (show_until_step <= 12)
         return;
     end
 
+    %% 8. remove all objects touching the border
+    clear_image_2 = imclearborder(erode_image_3);
+    plotImage(clear_image_2, app.processed_image_axes, 'Objects touching the border removed image');
+
+    %if (show_until_step <= 10)
+    %    return;
+    %end
+
+    %% 11. get the image size to approximate the minimum and maximum area of the plate
+    imageArea = size(input_image, 1) * size(input_image, 2);
+    minPlateArea = int32(imageArea * 0.01);    % minimum area of plate is 0.2% of picture
+    maxPlateArea = int32(imageArea * 0.3);     % maximum area of plate is 30% of picture
+
     %% 10. remove small objects from the image
-    plate_image = bwareaopen(erode_image_3, 50);
-    plate_image = imclearborder(plate_image);
-    plate_image = bwareaopen(plate_image, 200);
-    plotImage(plate_image, app.processed_image_axes, 'Removed small objects image');
+    small_rem_image = bwareaopen(clear_image_2, 50);
+    small_rem_image = imclearborder(small_rem_image);
+    small_rem_image = bwareaopen(small_rem_image, double(minPlateArea));
+    plotImage(small_rem_image, app.processed_image_axes, 'Removed small objects image');
 
     if (show_until_step <= 13)
         return;
     end
 
-    %% 11. get the image size to approximate the minimum and maximum area of the plate
-    imageArea = size(input_image, 1) * size(input_image, 2);
-    minPlateArea = int32(imageArea * 0.002);    %minimum area of plate is 0.2% of picture
-    maxPlateArea = int32(imageArea * 0.3);      %maximum area of plate is 30% of picture
-
-    if (show_until_step <= 14)
-        return;
-    end
-
     %% 12. connected-components labeling
-    % extract objects between 2% and 50% of image size
+    % extract objects between 1% and 30% of image size
     range = [minPlateArea, maxPlateArea];
-    [labelMatrix, numberOfConnectedObjects] = bwlabel(plate_image);
+    [labelMatrix, numConnObjects] = bwlabel(small_rem_image);
     cc_image = labelMatrix;
 
     % go through all objects
-    for n = 1:numberOfConnectedObjects  
-        % get area of object
-        areaOfObject = length(find(labelMatrix == n));
+    for n = 1:numConnObjects
+        areaOfObject = length(find(labelMatrix == n));      % get area of object n
         
-        % if the area is too small or too big set pixel value to 0
-        if areaOfObject < range(1) ||  areaOfObject > range(2)
+        % if the area is too big or too small set value to 0
+        if areaOfObject > range(2) || areaOfObject < range(1)
             cc_image(cc_image == n) = 0;
         end   
     end
 
-    % Convert image to [0,1] by setting every value >=1 to 1
+    % convert image to [0,1] by setting every value >=1 to 1
     cc_image = logical(cc_image);
     plotImage(cc_image, app.processed_image_axes, 'Component image');
 
@@ -172,8 +173,16 @@ function detectLicensePlate(input_image)
         return;
     end
 
+    %% 12.b. remove large objects from the image
+    plate_image = cc_image - bwareaopen(cc_image, 300000);
+    plotImage(plate_image, app.processed_image_axes, 'Removed large objects');
+
+    if (show_until_step <= 16)
+        return;
+    end
+
     %% 13. get bounding box of objects
-    objectProperties = regionprops(cc_image, 'BoundingBox');
+    objectProperties = regionprops(plate_image, 'BoundingBox');
     % Get number of of regions
     numberOfObjects = size(objectProperties, 1);
 
@@ -229,14 +238,15 @@ function detectLicensePlate(input_image)
 
     plate = imcrop(input_image, optimalObject.BoundingBox);
     plotImage(plate, app.detected_plate_axes, '');
+    app.open_image_button.Enable = true;
 end
 
 function plotImage(img, axes, plotTitle)
-    figure;
-    imshow(img);
-    %pause(0.5);
-    %imshow(img, 'InitialMagnification', 'fit', 'Parent', axes);
-    %title(plotTitle);
+    %figure;
+    %imshow(img);
+    pause(0.5);
+    imshow(img, 'InitialMagnification', 'fit', 'Parent', axes);
+    title(plotTitle);
     axis image;
     axis tight;
 end
