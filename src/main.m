@@ -12,87 +12,140 @@ end
 function detectLicensePlate(input_image)
     app = app_GUI();
 
-    %% 1. convert RGB-image to grayscale image
-    % check if the input is a valid RGB image (3 channels)
-    if size(input_image, 3) ~= 3
-        error('Input image must be RGB (3 channels).');
-    end
+    %% TODO debug
+    show_until_step = 15;
 
+    %% 1. convert RGB-image to grayscale image
     gray_image = rgb2gray(input_image);
-    plotImage(gray_image, app.axes_2);
-    title("Gray scaled image");
+    plotImage(gray_image, app.processed_image_axes, 'Gray scaled image');
+
+    if (show_until_step <= 1)
+        return;
+    end
 
     %% 2. median filter to remove noise
     % set filter parameters
     sigma = [3 3];                % filter standard deviations
     filtered_image = medfilt2(gray_image, sigma);
-    plotImage(filtered_image, app.axes_3);
-    title("Median filtered image");
+    plotImage(filtered_image, app.processed_image_axes, 'Median filtered image');
     
+    if (show_until_step <= 2)
+        return;
+    end
+
     %% 3. adaptive histogram equalization to enhance contrast
     contr_image = adapthisteq(filtered_image);
-    plotImage(contr_image, app.axes_4);
-    title("Contrast enhanced image");
+    plotImage(contr_image, app.processed_image_axes, 'Contrast enhanced image');
+
+    if (show_until_step <= 3)
+        return;
+    end
+
+    %% image substraction
+    [rows, columns, chans] = size(input_image);
+    se = strel('disk', round(columns * 0.025));
+    opened_image = imopen(contr_image, se);
+    plotImage(opened_image, app.processed_image_axes, 'Opened image');
+
+    subt_image = imsubtract(contr_image, opened_image);
+    plotImage(subt_image, app.processed_image_axes, 'Subtracted image');
+
 
     %% 4. image binarization
     % binarize the image using a locally adaptive threshold
     % % % bin_image = imbinarize(contr_image, 'adaptive');
-    % % % plotImage(bin_image, app.axes_5);
+    % % % plotImage(bin_image, app.processed_image_axes);
+
+    if (show_until_step <= 4)
+        return;
+    end
 
     %% 5. filter edges with the sobel filter
-    edge_image = edge(contr_image);
-    plotImage(edge_image, app.axes_5);
-    title("Edge filtered image");
+    edge_image = edge(subt_image);
+    plotImage(edge_image, app.processed_image_axes, 'Edge filtered image');
+
+    if (show_until_step <= 5)
+        return;
+    end
 
     %% 6. apply math. morphologies (dilate and erode) to fill spaces
     % dilation: create a structuring element
     se = strel('diamond', 3);
     dil_image = imdilate(edge_image, se);
-    plotImage(dil_image, app.axes_5);
-    title("Dilated image");
+    plotImage(dil_image, app.processed_image_axes, 'Dilated image');
+
+    if (show_until_step <= 6)
+        return;
+    end
 
     % erosion: create a structuring element
     se = strel('square', 3);
     erode_image = imerode(dil_image, se);
-    plotImage(erode_image, app.axes_5);
-    title("Eroded image");
+    plotImage(erode_image, app.processed_image_axes, 'Eroded image');
+
+    if (show_until_step <= 7)
+        return;
+    end
 
     %% 7. fill holes
     fill_image = imfill(erode_image, 4, "holes");
-    plotImage(fill_image, app.axes_5);
-    title("Holes filled image");
+    plotImage(fill_image, app.processed_image_axes, 'Holes filled image');
+
+    if (show_until_step <= 8)
+        return;
+    end
 
     %% 8. remove all objects touching the border
     clear_image = imclearborder(fill_image);
-    plotImage(clear_image, app.axes_5);
-    title("Objects touchingthe border removed image");
+    plotImage(clear_image, app.processed_image_axes, 'Objects touching the border removed image');
+
+    if (show_until_step <= 9)
+        return;
+    end
 
     %% 9. erode image with a diamond- and line-structuring-element
     %se = strel('square', 12);
     %open_image = imopen(clear_image, se);
-    % % % plotImage(open_image, app.axes_5);
-    % % % title("Opened image");
+    % % % plotImage(open_image, app.processed_image_axes, 'Opened image');
+
+    if (show_until_step <= 10)
+        return;
+    end
 
     se = strel('diamond', 5);
     erode_image_2 = imerode(clear_image, se);
-    plotImage(erode_image_2, app.axes_5);
-    title("Eroded image 2");
+    plotImage(erode_image_2, app.processed_image_axes, 'Eroded image 2');
+
+    if (show_until_step <= 11)
+        return;
+    end
 
     se = strel('line', 5, 5);
     erode_image_3 = imerode(erode_image_2, se);
-    plotImage(erode_image_3, app.axes_5);
-    title("Eroded image 3");
+    plotImage(erode_image_3, app.processed_image_axes, 'Eroded image 3');
+
+    if (show_until_step <= 12)
+        return;
+    end
 
     %% 10. remove small objects from the image
     plate_image = bwareaopen(erode_image_3, 50);
     plate_image = imclearborder(plate_image);
     plate_image = bwareaopen(plate_image, 200);
-    plotImage(plate_image, app.axes_5);
+    plotImage(plate_image, app.processed_image_axes, 'Removed small objects image');
+
+    if (show_until_step <= 13)
+        return;
+    end
 
     %% 11. get the image size to approximate the minimum and maximum area of the plate
     imageArea = size(input_image, 1) * size(input_image, 2);
     minPlateArea = int32(imageArea * 0.002);    %minimum area of plate is 0.2% of picture
     maxPlateArea = int32(imageArea * 0.3);      %maximum area of plate is 30% of picture
+
+    if (show_until_step <= 14)
+        return;
+    end
 
     %% 12. connected-components labeling
     % extract objects between 2% and 50% of image size
@@ -113,8 +166,11 @@ function detectLicensePlate(input_image)
 
     % Convert image to [0,1] by setting every value >=1 to 1
     cc_image = logical(cc_image);
-    plotImage(cc_image, app.axes_5);
-    title("Component image");
+    plotImage(cc_image, app.processed_image_axes, 'Component image');
+
+    if (show_until_step <= 15)
+        return;
+    end
 
     %% 13. get bounding box of objects
     objectProperties = regionprops(cc_image, 'BoundingBox');
@@ -172,14 +228,15 @@ function detectLicensePlate(input_image)
     end
 
     plate = imcrop(input_image, optimalObject.BoundingBox);
-    plotImage(plate, app.axes_5);
-    title("Detected plate area");
+    plotImage(plate, app.detected_plate_axes, '');
 end
 
-function plotImage(img, axes)
+function plotImage(img, axes, plotTitle)
     figure;
     imshow(img);
+    %pause(0.5);
     %imshow(img, 'InitialMagnification', 'fit', 'Parent', axes);
+    %title(plotTitle);
     axis image;
     axis tight;
 end
