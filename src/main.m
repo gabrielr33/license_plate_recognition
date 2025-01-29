@@ -61,6 +61,7 @@ function detectLicensePlate(input_image)
 
     %% 5. filter edges with the sobel filter
     edge_image = edge(subt_image);
+    %edge_image = sobel_conv(subt_image);
     plotImage(edge_image, app.processed_image_axes, 'Edge filtered image');
 
     if (show_until_step <= 5)
