@@ -18,17 +18,17 @@ The application takes an RGB image of a car as input and outputs the recognised 
 
 ## Image Processing Pipeline
 * **License Plate Detection**
-	* Median Filtering (to remove noise)
-	* Adaptive Histogram Equalization (to enhance contrast)
-	* Image Subtraction (to enhance edges)
-	* Sobel filtering (to detect edges)
-	* Mathematical Morphologies (Dilate and Erode, to close gaps in lines)
-	* Floodfill (to fill holes)
-	* Connected Component Labeling (to determine the final position of the license plate)
+	- **Median Filtering** (to remove noise)
+	- **Adaptive Histogram** Equalization** (to enhance contrast)
+	- **Image Subtraction** (to enhance edges)
+	- **Sobel filtering** (to detect edges)
+	- **Mathematical Morphologies** (Dilate and Erode, to close gaps in lines)
+	- **Floodfill** (to fill holes)
+	- **Connected Component Labeling** (to determine the final position of the license plate)
 	
 * **Character Segmentation**
-    * Image Pyramid Reduction (to reduce the size of the image)
-	* Template Matching (to match the characters to the tempalates using a correlation coefficient)
+    - **Image Pyramid Reduction** (to reduce the size of the image)
+	- **Template Matching** (to match the characters to the tempalates using a correlation coefficient)
 	
 ## User Interface
 
@@ -36,13 +36,13 @@ The application takes an RGB image of a car as input and outputs the recognised 
     <img src = "gui.png">	
 </p>
 
-* Open Image: loads the image from the dataset folder
-* Threshold: how aggresive the image is opened to detect edges (range = [0.001, 0.1], default = 0.025)
-* Run detection: start the license plate recognition pipeline
+- Open Image: loads the image from the dataset folder
+- Threshold: how aggresive the image is opened to detect edges (range = [0.001, 0.1], default = 0.025)
+- Run detection: start the license plate recognition pipeline
 
-* Input Image: shows the loaded input image
-* Processed Image: shows the current step of the processing pipeline
-* Detected plate: image of the detected plate
+- Input Image: shows the loaded input image
+- Processed Image: shows the current step of the processing pipeline
+- Detected plate: image of the detected plate
 
 ## Results
 
