@@ -61,8 +61,7 @@ function [result] = BoundingBoxPlate(input, connected_components)
     end
 
     if(~isstruct(bestFit))
-        % TODO not detected
-        return
+        result = [];
+    else
+        result = imcrop(input, bestFit.BoundingBox);
     end
-
-    result = imcrop(input, bestFit.BoundingBox);

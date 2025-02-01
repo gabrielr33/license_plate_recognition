@@ -28,7 +28,7 @@ function detectLicensePlate(input_image)
     plotImage(contr_image, app.processed_image_axes, 'contrast enhancing..', app);
 
     %% image subtraction to enhance edges
-    se = strel('disk', round(size(input_image, 2) * 0.025));
+    se = strel('disk', round(size(input_image, 2) * app.threshold_edit_field.Value));
     opened_image = imopen(contr_image, se);
     plotImage(opened_image, app.processed_image_axes, 'opening..', app);
 
@@ -89,7 +89,15 @@ function detectLicensePlate(input_image)
     plate_image = cc_image - bwareaopen(cc_image, 500000);
     plotImage(plate_image, app.processed_image_axes, 'removing large objects..', app);
 
+    %% get the final image cropped to the size of the bounding box of the detected license plate
     plate = BoundingBoxPlate(input_image, plate_image);
+
+    if (isempty(plate))
+        app.output_step_text.Text = 'plate could not be found!';
+        app.open_image_button.Enable = true;
+        return;
+    end
+
     plotImage(plate, app.detected_plate_axes, '', app);
     app.open_image_button.Enable = true;
 end
