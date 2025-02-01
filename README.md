@@ -5,16 +5,30 @@ Computer vision application that detects and recognizes license plate numbers in
 ## Table of contents
 
 * [General Info](#general-info)
-* [Image Processing Pipeline](#image-processing-pipeline)
 * [User Interface](#user-interface)
+* [Image Processing Pipeline](#image-processing-pipeline)
 * [Results](#results)
-* [Setup](#setup)
+* [Usage](#setup)
 * [Sources](#sources)
 
 ## General Info
 
 This repository contains a MATLAB implementation for automatic license plate recognition. It utilizes image processing techniques to locate, segment, and recognize characters from license plates in RGB images.
 The application takes an RGB image of a car as input and outputs the recognised letters of the license plate as well as the federal state if it is an Austrian license plate.
+
+## User Interface
+
+<p float = "left">
+    <img src = "gui.png">	
+</p>
+
+- Open Image: loads the image from the dataset folder
+- Threshold: how aggresive the image is opened to detect edges (range = [0.001, 0.1], default = 0.025)
+- Run detection: start the license plate recognition pipeline
+
+- Input Image: shows the loaded input image
+- Processed Image: shows the current step of the processing pipeline
+- Detected plate: image of the detected plate
 
 ## Image Processing Pipeline
 * **License Plate Detection**
@@ -30,27 +44,16 @@ The application takes an RGB image of a car as input and outputs the recognised 
     - **Image Pyramid Reduction** (to reduce the size of the image)
 	- **Template Matching** (to match the characters to the tempalates using a correlation coefficient)
 	
-## User Interface
-
-<p float = "left">
-    <img src = "gui.png">	
-</p>
-
-- Open Image: loads the image from the dataset folder
-- Threshold: how aggresive the image is opened to detect edges (range = [0.001, 0.1], default = 0.025)
-- Run detection: start the license plate recognition pipeline
-
-- Input Image: shows the loaded input image
-- Processed Image: shows the current step of the processing pipeline
-- Detected plate: image of the detected plate
-
 ## Results
 
 todo
 
-## Setup
+## Usage
 
-todo
+**Prerequisites**: A functional Matlab distribution is installed on your computer.
+
+The 'src' folder in the project folder contains the Matlab file 'app_GUI.m' which needs to be opened and executed. The 'Open Image' button loads an image from the 'dataset' folder. The 'Run detection' button 
+starts the license plate detection pipeline.
 
 ## Sources
 
