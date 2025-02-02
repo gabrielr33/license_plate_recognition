@@ -46,7 +46,7 @@ The application takes an RGB image of a car as input and outputs the recognised 
 	
 ## Example Results
 
-<p float = "left">
+<p style ="justify-content: space-around;">
     <img src = "example_result.png">	
 </p>
 
@@ -61,6 +61,6 @@ starts the license plate detection pipeline.
 
 * [MATLAB](https://de.mathworks.com/)
 &nbsp;
-* Kaur, S., & Kaur, S. (2014). An efficient approach for number plate extraction from vehicles image under image processing. International Journal of Computer Science and Information Technologies.
-* Kukreja, A., Bhandari, S., Bhatkar, S., Chavda, J., & Lad, S. (2017). Indian vehicle number plate detection using image processing. Int Res J Eng Technol (IRJET).
-* Bhat, R., & Mehandia, B. (2014). Recognition of vehicle number plate using matlab. International journal of innovative research in electrical, electronics, instrumentation and control engineering.
+* Kaur, S., & Kaur, S. (2014). An efficient approach for number plate extraction from vehicles image under image processing. International Journal of Computer Science and Information Technologies, 5(3), 2954-2959.
+* Kukreja, A., Bhandari, S., Bhatkar, S., Chavda, J., & Lad, S. (2017). Indian vehicle number plate detection using image processing. Int Res J Eng Technol (IRJET), 4(4).
+* Bhat, R., & Mehandia, B. (2014). Recognition of vehicle number plate using matlab. International journal of innovative research in electrical, electronics, instrumentation and control engineering, 2(8), 1899-1903.
