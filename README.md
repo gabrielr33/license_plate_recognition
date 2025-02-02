@@ -22,23 +22,23 @@ The application takes an RGB image of a car as input and outputs the recognised 
     <img src = "gui.png">	
 </p>
 
-- Open Image: loads the image from the dataset folder
-- Threshold: how aggresive the image is opened to detect edges (range = [0.001, 0.1], default = 0.025)
-- Run detection: start the license plate recognition pipeline
-
-- Input Image: shows the loaded input image
-- Processed Image: shows the current step of the processing pipeline
-- Detected plate: image of the detected plate
+* Open Image: loads the image from the dataset folder
+* Threshold: how aggresive the image is opened to detect edges (range = [0.001, 0.1], default = 0.025)
+* Run detection: start the license plate recognition pipeline
+<br />
+* Input Image: shows the loaded input image
+* Processed Image: shows the current step of the processing pipeline
+* Detected plate: image of the detected plate
 
 ## Image Processing Pipeline
 * **License Plate Detection**
 	- **Median Filtering** (to remove noise)
-	- **Adaptive Histogram** Equalization** (to enhance contrast)
+	- **Adaptive Histogram Equalization** (to enhance contrast)
 	- **Image Subtraction** (to enhance edges)
 	- **Sobel filtering** (to detect edges)
 	- **Mathematical Morphologies** (Dilate and Erode, to close gaps in lines)
 	- **Floodfill** (to fill holes)
-	- **Connected Component Labeling** (to determine the final position of the license plate)
+	- **Connected-Component Labeling** (to determine the final position of the license plate)
 	
 * **Character Segmentation**
     - **Image Pyramid Reduction** (to reduce the size of the image)
@@ -56,6 +56,8 @@ The 'src' folder in the project folder contains the Matlab file 'app_GUI.m' whic
 starts the license plate detection pipeline.
 
 ## Sources
+
+* [MATLAB](https://de.mathworks.com/)
 
 * Kaur, S., & Kaur, S. (2014). An efficient approach for number plate extraction from vehicles image under image processing. International Journal of Computer Science and Information Technologies.
 * Kukreja, A., Bhandari, S., Bhatkar, S., Chavda, J., & Lad, S. (2017). Indian vehicle number plate detection using image processing. Int Res J Eng Technol (IRJET).

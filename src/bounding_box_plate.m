@@ -1,4 +1,4 @@
-%Author: Gabriel Ratschiller
+% Author: Gabriel Ratschiller
 
 % Identifies the bounding box of the license plate and crops the input
 % image to the bounding box area.
@@ -7,9 +7,9 @@
 %connected_components...Image with the connected components
 %result...Image cropped to the size of the plate bounding box
 
-function [result] = BoundingBoxPlate(input, connected_components)
+function [result] = bounding_box_plate(input, connected_components)
     
-    %% get bounding box of objects
+    % get bounding box of objects
     objectProperties = regionprops(connected_components, 'BoundingBox');
     % Get number of of regions
     numObjects = size(objectProperties, 1);
@@ -65,3 +65,4 @@ function [result] = BoundingBoxPlate(input, connected_components)
     else
         result = imcrop(input, bestFit.BoundingBox);
     end
+end

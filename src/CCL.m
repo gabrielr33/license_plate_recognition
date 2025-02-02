@@ -1,4 +1,4 @@
-%Author: Gabriel Ratschiller
+% Author: Gabriel Ratschiller
 
 % Identifies the connected components in an image and assigns each one a
 % unique label. Checks the area of each label and returns only the
@@ -28,3 +28,4 @@ function [result] = CCL(input, rangePlateArea)
     
     % convert image to [0,1] by setting every value >=1 to 1
     result = logical(result);
+end
