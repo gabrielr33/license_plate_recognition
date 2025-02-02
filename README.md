@@ -1,6 +1,6 @@
 # License Plate Recognition
 
-Computer vision application that detects and recognizes license plate numbers in RGB car images.
+Computer vision application for the detection of license plates and recognition of the license plate characters and the federal state in RGB car images.
 
 ## Table of contents
 
