@@ -25,7 +25,7 @@ The application takes an RGB image of a car as input and outputs the recognised 
 * Open Image: loads the image from the dataset folder
 * Threshold: how aggresive the image is opened to detect edges (range = [0.001, 0.1], default = 0.025)
 * Run detection: start the license plate recognition pipeline
-<br />
+&nbsp;
 * Input Image: shows the loaded input image
 * Processed Image: shows the current step of the processing pipeline
 * Detected plate: image of the detected plate
