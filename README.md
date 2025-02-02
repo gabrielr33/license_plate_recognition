@@ -7,8 +7,8 @@ Computer vision application that detects and recognizes license plate numbers in
 * [General Info](#general-info)
 * [User Interface](#user-interface)
 * [Image Processing Pipeline](#image-processing-pipeline)
-* [Results](#results)
-* [Usage](#setup)
+* [Example Results](#example-results)
+* [Usage](#usage)
 * [Sources](#sources)
 
 ## General Info
@@ -44,9 +44,11 @@ The application takes an RGB image of a car as input and outputs the recognised 
     - **Image Pyramid Reduction** (to reduce the size of the image)
 	- **Template Matching** (to match the characters to the tempalates using a correlation coefficient)
 	
-## Results
+## Example Results
 
-todo
+<p float = "left">
+    <img src = "example_result.png">	
+</p>
 
 ## Usage
 
@@ -58,7 +60,7 @@ starts the license plate detection pipeline.
 ## Sources
 
 * [MATLAB](https://de.mathworks.com/)
-
+&nbsp;
 * Kaur, S., & Kaur, S. (2014). An efficient approach for number plate extraction from vehicles image under image processing. International Journal of Computer Science and Information Technologies.
 * Kukreja, A., Bhandari, S., Bhatkar, S., Chavda, J., & Lad, S. (2017). Indian vehicle number plate detection using image processing. Int Res J Eng Technol (IRJET).
 * Bhat, R., & Mehandia, B. (2014). Recognition of vehicle number plate using matlab. International journal of innovative research in electrical, electronics, instrumentation and control engineering.
